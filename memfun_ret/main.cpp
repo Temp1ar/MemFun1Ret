@@ -3,7 +3,7 @@
 #include <vector>
 
 template<class T, class R, class A>
-struct Functor {
+struct Functor : std::binary_function<T, A, R> {
 	typedef R (T::*method_ref)(A);
 	method_ref ref_;
 
@@ -15,7 +15,7 @@ struct Functor {
 };
 
 template<class T, class R, class A>
-struct FunctorConst {
+struct FunctorConst : std::binary_function<T, A, R> {
 	typedef R (T::*method_ref)(A) const;
 	method_ref ref_;
 
@@ -46,10 +46,12 @@ int main() {
 	std::vector<int> v;
 	v.push_back(2);
 
+	// Testing with non-const method
 	auto f = mem_fun1_ret(&std::vector<int>::reserve);
 	f(v, 10);
 	std::cout << v.capacity() << std::endl;
 	
+	// Testing with const method
 	auto fc = mem_fun1_ret(&Test::test);
 	Test a;
 	std::cout << fc(a, 1) << std::endl;
